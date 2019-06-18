@@ -1,0 +1,103 @@
+<html>
+    <head>
+        <title>Robotron the Ontobot</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css" />
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://js.pusher.com/4.4/pusher.min.js"></script>
+          
+    </head>
+    <body>
+    
+	<nav class="navbar is-fixed-bottom" role="navigation" aria-label="main navigation">
+		<div class="container">
+			<div class="navbar-item is-expanded">
+
+				<input id="chat_text" class="input" type="text">
+				<a id="chat_btn" class="button is-info">
+					Post
+				</a>
+
+			</div>
+		</div>
+
+	</nav>
+	
+ 
+            
+        <h1>Pusher Test</h1>
+        <p>
+            Try publishing an event to channel <code>my-channel</code>
+            with event name <code>my-event</code>.
+        </p>    
+        <div class="modal is-active">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <input id="username_input" class="input" type="text" placeholder="Choose a username">
+                    </div>
+                    <div class="control">
+                        <a id="start_chat" class="button is-info">Start Chatting</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        
+      
+<script>
+         
+			$(function() {
+			
+				let username;
+				
+				$('#start_chat').on('click', function() {
+				
+					username = $('#username_input').val();
+				$('.modal').removeClass('is-active');
+				});
+			  
+				$('#chat_btn').on('click', function() {
+				let message = $('#chat_text').val();
+				$.post('/message', {'username' : username, 'message' : message}, function() {
+				  $('#chat_text').val('');
+				});
+				
+			  });
+			});
+         
+            // Enable pusher logging - don't include this in production
+            Pusher.logToConsole = true;
+        
+            var pusher = new Pusher('f9e691ff2bac181922d7', {
+              cluster: 'us2',
+              forceTLS: true
+            });
+        
+            var channel = pusher.subscribe('my-channel');			
+			channel.bind('new-message', function(data) {
+			  let name = data.username;
+			  let message = data.message;
+			  let message_template = `<article class="media">
+									  <div class="media-content">
+										<div class="content">
+										  <p>
+											<strong>${name}</strong>
+											<br> ${message}
+										  </p>
+										</div>
+									  </div>
+									</article>`;
+									
+			  $('#content').append(message_template);
+			});
+</script>	  
+        
+        
+       
+        
+    </body>
+</html>
