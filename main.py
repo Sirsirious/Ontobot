@@ -16,23 +16,28 @@ pusher_client = pusher.Pusher(
 
 @app.route('/home')
 def index():
-    #pusher_client.trigger('my-channel', 'my-event', {'message': 'hello world'})
     return render_template('index.html')
 
 @app.route('/message', methods=['POST'])
 def message():
 
-	message_data = request.get_json()
+	#message_data = request.get_json()
+	try:		
+		username = request.form.get('username')
+		message = request.form.get('message')
+	
+		
+		pusher_client.trigger('Ontobot', 'new-message', {'username':username, 'message': message})
+		
+		return jsonify({'result':'success'})
+		
+	except:
+		
+		return jsonify({'result':'failure'})
 
-	username = message_data['username']
-	message = message_data['message']
-	print(username, message)
-    #user_input=request.form['user_input']
     #TODO - the whole thing =D
     #ontobot_response = dict(bot_response:'Hello')
-    #bot_response = "Hello!!"
-    #return jsonify(json.loads(ontobot_response))
-    #return render_template('index.html',user_input=user_input,                           bot_response=bot_response)
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
