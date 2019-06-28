@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from flask import Flask, render_template, request, jsonify
+from ontobot.Ontobot import Ontobot
 import json
 import pusher
 
@@ -27,7 +28,8 @@ def message():
 		message = request.form.get('message')
 	
 		
-		pusher_client.trigger('Ontobot', 'new-message', {'username':username, 'message': message})
+		#pusher_client.trigger('Ontobot', 'new-message', {'username':username, 'message': message})
+		pusher_client.trigger('Ontobot', 'new-message', {'username':'Ontobot', 'message': 'Hello!'})
 		
 		return jsonify({'result':'success'})
 		
